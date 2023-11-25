@@ -12,6 +12,7 @@ def normalize(name):
         'х': 'kh','Х': 'Kh','ц': 'ts','Ц': 'Ts','ч': 'ch','Ч': 'Ch','ш': 'sh','Ш': 'Sh','щ': 'shch',
         'Щ': 'Shch','ь': '','Ь': '','ю': 'iu','Ю': 'Yu','я': 'ia','Я': 'Ya'
     }
+    
     name_without_extension, extension = os.path.splitext(name)
     new_name = ''
     for char in name_without_extension:
@@ -29,9 +30,10 @@ def normalize(name):
 def process_folder(path):
     for root, dirs, files in os.walk(path):
         for file in files:
-            if file not in ('Video', 'Docs', 'Music', 'Archives', 'Unfounded'):
+            file_extension = os.path.splitext(file)[1]
+            if file_extension:
                 normalized_name = normalize(file)
-                ext = os.path.splitext(file)[1][1:].upper()
+                ext = file_extension[1:].upper()
                 if ext in ('JPG', 'PNG', 'JPEG', 'SVG'):
                     shutil.move(os.path.join(root, file), os.path.join(path, 'Pictures', normalize(normalized_name)))
                 elif ext in ('AVI', 'MP4', 'MOV', 'MKV'):
@@ -45,6 +47,9 @@ def process_folder(path):
                     os.remove(os.path.join(root, file))
                 else:
                     shutil.move(os.path.join(root, file), os.path.join(path, 'Unfounded', normalize(normalized_name)))
+            else:
+                print(f"File '{file}' has no extension, skipping...")
+                
         for folder in dirs:
             full_folder_path = os.path.join(root, folder)
             try:
