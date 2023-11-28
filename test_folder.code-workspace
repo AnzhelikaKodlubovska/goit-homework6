@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "test_folder",
+			"path": "../../../Desktop/test_folder"
+		},
+		{
+			"name": "goit-homework6",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
