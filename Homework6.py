@@ -1,6 +1,6 @@
-import sys
 from pathlib import Path
 import shutil
+import sys
 from transliterate import translit
 
 images = '.jpg .png .jpeg .svg'.split()
@@ -20,7 +20,6 @@ dict_suf = {'images': images,
 dict_suf_reversed = {}
 for key, value in dict_suf.items():
     dict_suf_reversed.update(dict.fromkeys(value, key))
-    dict.fromkeys(value, key)
 
 
 def normalize(name: str):
@@ -29,24 +28,29 @@ def normalize(name: str):
     return normalized_name
 
 
-def unpack_archive(root_path, file_path):
+def unpack_archive(new_path: Path , file_path: Path):
     try:
-        unpack_folder = root_path / file_path.stem
+        unpack_folder = new_path / file_path.stem
         shutil.unpack_archive(str(file_path), str(unpack_folder))
     except Exception as e:
         print(f"Extraction failed for '{file_path}': {e}")
         file_path.unlink()
     
     
-def move(root_path: Path,path: Path): 
+def move(root_path: Path, path: Path):
+    if path.suffix.lower() == '.py':  
+        return
     file_suffix = path.suffix
     file_name = path.stem
     kategory = dict_suf_reversed.get(file_suffix.lower(), 'other')
     new_path = root_path / kategory
     if not new_path.exists():
         new_path.mkdir()
-    new_file_name = normalize(file_name) + file_suffix
-    path.replace(new_path / new_file_name)
+        new_file_name = normalize(file_name) + file_suffix
+    if kategory == 'archives': 
+        unpack_archive(new_path, path)  
+    else:
+        path.replace(new_path / new_file_name) 
     
     
 def sorted_files(root_path, path):
