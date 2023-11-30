@@ -46,11 +46,10 @@ def move(root_path: Path, path: Path):
     new_path = root_path / kategory
     if not new_path.exists():
         new_path.mkdir()
-        new_file_name = normalize(file_name) + file_suffix
+    new_file_name = normalize(file_name) + file_suffix
+    path.replace(new_path / new_file_name) 
     if kategory == 'archives': 
-        unpack_archive(new_path, path)  
-    else:
-        path.replace(new_path / new_file_name) 
+        unpack_archive(new_path, new_path / new_file_name)  
     
     
 def sorted_files(root_path, path):
